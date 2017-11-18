@@ -29,9 +29,9 @@
     
     FB.AppEvents.logPageView();
 
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
-    });
+    checkLoginState();
+
+    testAPI();
 
   };
 
@@ -43,7 +43,6 @@
   	fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
-
   function checkLoginState() {
     FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
@@ -52,10 +51,34 @@
 
   function statusChangeCallback(response) {
     if (response.status === 'connected') {
+      setElements(true);
       console.log('Looged in and autheticated.');
     } else {
+      setElements(false);
       console.log('Not logged in.');
     }
+  }
+
+  function setElements(isLoggedIn) {
+    if (isLoggedIn) {
+
+    } else {
+
+    }
+  }
+
+  function logout() {
+    FB.logout(function(response) {
+      setElements(false);
+    });
+  }
+
+  function testAPI() {
+    FB.api('/me?fields=name,email', function(response) {
+      if (response && !response.error) {
+        console.log(response);
+      }
+    });
   }
 
 
