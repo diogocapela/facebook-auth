@@ -5,7 +5,7 @@
 <body>
 
 <!-- Facebook Login Button -->
-<div class="logged-out">
+<div class="logged-out" style="display: none;">
     <fb:login-button
             scope="public_profile,email,user_friends"
             onlogin="auth.checkLoginState();">
@@ -13,7 +13,7 @@
 </div>
 
 <!-- Facebook Logout Button -->
-<div class="logged-in">
+<div class="logged-in" style="display: none;">
     <button id="auth_logout_button">Logout</button>
 </div>
 
@@ -41,6 +41,7 @@
                     // if user is logged out
                     console.log('auth.checkLoginState()');
                     console.log('No user logged in.');
+                    auth.setTemplate(false);
                     //location.href = './login';
                 }
             });
