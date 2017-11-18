@@ -11,6 +11,9 @@
 </fb:login-button>
 
 
+<button id="test_api">TEST API</button>
+
+
 <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -20,74 +23,77 @@
 let userID;
 let userAccessToken;
 
-  window.fbAsyncInit = function() {
+window.fbAsyncInit = function() {
 
-    FB.init({
-    	appId            : '182117469011248',
-    	autoLogAppEvents : true,
-    	xfbml            : true,
-    	version          : 'v2.11'
-    });
-    
-    FB.AppEvents.logPageView();
+  FB.init({
+  	appId            : '182117469011248',
+  	autoLogAppEvents : true,
+  	xfbml            : true,
+  	version          : 'v2.11'
+  });
+  
+  FB.AppEvents.logPageView();
 
-    checkLoginState();
+  checkLoginState();
 
-    testAPI();
+  testAPI();
 
-  };
+};
 
-  (function(d, s, id){
-  	var js, fjs = d.getElementsByTagName(s)[0];
-  	if (d.getElementById(id)) {return;}
-  	js = d.createElement(s); js.id = id;
-  	js.src = "https://connect.facebook.net/en_US/sdk.js";
-  	fjs.parentNode.insertBefore(js, fjs);
-  }(document, 'script', 'facebook-jssdk'));
+(function(d, s, id){
+	var js, fjs = d.getElementsByTagName(s)[0];
+	if (d.getElementById(id)) {return;}
+	js = d.createElement(s); js.id = id;
+	js.src = "https://connect.facebook.net/en_US/sdk.js";
+	fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
 
-  function checkLoginState() {
-    FB.getLoginStatus(function(response) {
-      statusChangeCallback(response);
-    });
+function checkLoginState() {
+  FB.getLoginStatus(function(response) {
+    statusChangeCallback(response);
+  });
+}
+
+function statusChangeCallback(response) {
+  if (response.status === 'connected') {
+    userID = response.authResponse.userID;
+    userAccessToken = response.authResponse.accessToken;
+    setElements(true);
+    console.log('Looged in and autheticated.');
+  } else {
+    location.href = './login';
+    setElements(false);
+    console.log('Not logged in.');
   }
+}
 
-  function statusChangeCallback(response) {
-    if (response.status === 'connected') {
-      userID = response.authResponse.userID;
-      userAccessToken = response.authResponse.accessToken;
-      setElements(true);
-      console.log('Looged in and autheticated.');
-    } else {
-      location.href = './login';
-      setElements(false);
-      console.log('Not logged in.');
-    }
+function setElements(isLoggedIn) {
+  if (isLoggedIn) {
+
+  } else {
+
   }
+}
 
-  function setElements(isLoggedIn) {
-    if (isLoggedIn) {
+function logout() {
+  FB.logout(function(response) {
+    setElements(false);
+  });
+}
 
-    } else {
-
-    }
-  }
-
-  function logout() {
-    FB.logout(function(response) {
-      setElements(false);
-    });
-  }
-
-  function testAPI() {
-    FB.api('/me?fields=name,email,user_friends', {  access_token : userAccessToken }, function(response) {
-      if (response && !response.error) {
-
-        console.log(response);
-      }
+function testAPI() {
+  FB.api('/me?fields=name,email,user_friends', {  access_token : userAccessToken }, function(response) {
+    if (response && !response.error) {
       console.log(response);
-    });
-  }
+    } else {
+      console.log(response);
+    }
+  });
+}
 
+$('#test_api').on('click', function() {
+  testAPI();
+});
 
 
 
