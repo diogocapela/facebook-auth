@@ -13,6 +13,7 @@
 
 <button id="test_api">TEST API</button>
 
+<p id="box"></p>
 
 <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -95,19 +96,21 @@ function testAPI() {
   FB.api('/me?fields=id,name,friends,friendlists', {  access_token : userAccessToken }, function(response) {
     if (response && !response.error) {
       console.log(response);
-      getUserPic(response.id);
+      getUserPic(response);
     } else {
       console.log(response);
     }
   });
 }
 
-function getUserPic(userID) {
+function getUserPic(userInfo) {
   FB.api(
-      "/" + userID + "/picture",
+      "/" + userInfo + "/picture",
       function (response) {
         if (response && !response.error) {
           console.log(response);
+
+          buildProfile(userInfo, response);
         } else {
           console.log(response);
         }
@@ -115,13 +118,17 @@ function getUserPic(userID) {
   );  
 }
 
-function buildProfile(user) {
+function buildProfile(user, imgUrl) {
   let html = `
     <h1>${user.name}<h1>
     <h3>${user.id}</h3>
     <p>${user.email}</p>
     <p>${user.birthday}</p>
+    <img src="${imgUrl}"
   `;
+
+  $('#box').html(html);
+
 }
 
 function buildHallOfFame(response) {
