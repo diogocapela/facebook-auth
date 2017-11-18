@@ -95,7 +95,7 @@ function testAPI() {
   FB.api('/me?fields=id,name,friends,friendlists', {  access_token : userAccessToken }, function(response) {
     if (response && !response.error) {
       console.log(response);
-      getUserPic(2202098346482864);
+      getUserPic(response.id);
     } else {
       console.log(response);
     }
