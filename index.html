@@ -91,6 +91,39 @@ function testAPI() {
   });
 }
 
+function testAPI() {
+  FB.api('/me?fields=id,name,friends,friendlists', {  access_token : userAccessToken }, function(response) {
+    if (response && !response.error) {
+      console.log(response);
+      getUserPic(2202098346482864);
+    } else {
+      console.log(response);
+    }
+  });
+}
+
+function getUserPic(userID) {
+  FB.api(
+      "/" + userID + "/picture",
+      function (response) {
+        if (response && !response.error) {
+          console.log(response);
+        } else {
+          console.log(response);
+        }
+      }
+  );  
+}
+
+function buildProfile(user) {
+  let html = `
+    <h1>${user.name}<h1>
+    <h3>${user.id}</h3>
+    <p>${user.email}</p>
+    <p>${user.birthday}</p>
+  `;
+}
+
 function buildHallOfFame(response) {
   let html = `
     <h1><h1>
