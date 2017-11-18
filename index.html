@@ -21,8 +21,13 @@
   crossorigin="anonymous"></script>
 
 <script>
-let userID;
-let userAccessToken;
+let userObject = {
+  name,
+  id,
+  user_id,
+  profile_pic,
+  access_token
+};
 
 window.fbAsyncInit = function() {
 
@@ -36,7 +41,6 @@ window.fbAsyncInit = function() {
   FB.AppEvents.logPageView();
 
   checkLoginState();
-
   testAPI();
 
 };
@@ -57,22 +61,14 @@ function checkLoginState() {
 
 function statusChangeCallback(response) {
   if (response.status === 'connected') {
-    userID = response.authResponse.userID;
-    userAccessToken = response.authResponse.accessToken;
-    setElements(true);
+    // user is logged in
+    userObject.user_id = response.authResponse.userID;
+    userObject.access_token = response.authResponse.accessToken;
     console.log('Looged in and autheticated.');
   } else {
+    // user is logged out
     // location.href = './login';
-    setElements(false);
     console.log('Not logged in.');
-  }
-}
-
-function setElements(isLoggedIn) {
-  if (isLoggedIn) {
-
-  } else {
-
   }
 }
 
@@ -84,8 +80,10 @@ function logout() {
 
 
 function testAPI() {
-  FB.api('/me?fields=id,name,friends,friendlists', {  access_token : userAccessToken }, function(response) {
+  FB.api('/me?fields=id,name,friends,friendlists', {  access_token : userObject.access_token }, function(response) {
     if (response && !response.error) {
+      userObject.id = response.id;
+      userObject.name = response.name;
       console.log(response);
       getUserPic(response);
     } else {
@@ -99,9 +97,10 @@ function getUserPic(res) {
       "/" + res.id + "/picture",
       function (response) {
         if (response && !response.error) {
+          userObject.profile_pic = response.data.url;
           console.log(response);
-
-          //buildProfile(userInfo, response.data);
+          
+          buildProfile(userObject);
         } else {
           console.log(response);
         }
@@ -109,23 +108,20 @@ function getUserPic(res) {
   );  
 }
 
-function buildProfile(user, imgUrl) {
+function buildProfile(userObj) {
+
   let html = `
-    <h1>${user.name}<h1>
-    <h3>${user.id}</h3>
-    <img src="${imgUrl.data.url}">
+    <h1>${userObj.name}<h1>
+    <h3>${userObj.id}</h3>
+    <img src="${userObj.profile_pic}">
+    <h3>${userObj.user_id}</h3>
+    <h3>${userObj.access_token}</h3>
   `;
 
-  console.log(imgUrl);
+  console.log(userObj);
 
   $('#box').html(html);
 
-}
-
-function buildHallOfFame(response) {
-  let html = `
-    <h1><h1>
-  `;
 }
 
 $('#test_api').on('click', function() {
