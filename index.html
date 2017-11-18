@@ -4,7 +4,7 @@
 </head>
 <body>
 
-<!-- Facebook Login Button -->
+<!-- User is Logged in -->
 <div class="logged-out" style="display: none;">
     <fb:login-button
             scope="public_profile,email,user_friends"
@@ -12,7 +12,7 @@
     </fb:login-button>
 </div>
 
-<!-- Facebook Logout Button -->
+<!-- User is Logged out -->
 <div class="logged-in" style="display: none;">
     <button id="auth_logout_button">Logout</button>
     <br>
@@ -83,6 +83,12 @@
                 <img src="${userObj.profile_pic}">
               `;
             $('#box').html(html);
+        },
+        getFriendsData: function () {
+
+        },
+        getFriendPicture: function () {
+
         },
         setTemplate: function (isLoggedIn) {
             if(isLoggedIn) {
