@@ -21,13 +21,7 @@
   crossorigin="anonymous"></script>
 
 <script>
-let userObject = {
-  name,
-  id,
-  user_id,
-  profile_pic,
-  access_token
-};
+let userObject = {};
 
 window.fbAsyncInit = function() {
 
@@ -99,7 +93,6 @@ function getUserPic(res) {
         if (response && !response.error) {
           userObject.profile_pic = response.data.url;
           console.log(response);
-          
           buildProfile(userObject);
         } else {
           console.log(response);
