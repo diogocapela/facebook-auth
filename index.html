@@ -46,12 +46,7 @@
     }(document, 'script', 'facebook-jssdk'));
 
     let auth = {
-        userData: {
-            id,
-            access_token,
-            name,
-            profile_pic
-        },
+        userData: {},
         checkLoginState: function() {
             FB.getLoginStatus(function(response) {
                 if (response.status === 'connected') {
