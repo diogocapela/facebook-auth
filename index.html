@@ -15,13 +15,13 @@
 <!-- Facebook Logout Button -->
 <div class="logged-in" style="display: none;">
     <button id="auth_logout_button">Logout</button>
+    <br>
+    <div id="box"></div>
 </div>
 
-<div id="box"></div>
 
 <!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 <script>
 
@@ -97,6 +97,8 @@
             FB.logout(function (response) {
                 console.log('auth.logout()');
                 console.log(response);
+                auth.setTemplate(false);
+                auth.checkLoginState();
                 //location.href = './login';
             });
         }
