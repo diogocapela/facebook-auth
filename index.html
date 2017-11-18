@@ -29,6 +29,10 @@
     
     FB.AppEvents.logPageView();
 
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+
   };
 
   (function(d, s, id){
@@ -46,7 +50,7 @@
     });
   }
 
-  function statusChangeCallback() {
+  function statusChangeCallback(response) {
     if (response.status === 'connected') {
       console.log('Looged in and autheticated.');
     } else {
