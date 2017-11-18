@@ -30,12 +30,14 @@
             FB.getLoginStatus(function(response) {
                 if (response.status === 'connected') {
                     // if user is logged in
+                    console.log('auth.checkLoginState()');
                     console.log('User logged in. ID: ' + response.authResponse.userID);
                     auth.userData.id = response.authResponse.userID;
                     auth.userData.access_token = response.authResponse.accessToken;
                     auth.getUserData(auth.userData.access_token);
                 } else {
                     // if user is logged out
+                    console.log('auth.checkLoginState()');
                     console.log('No user logged in.');
                     //location.href = './login';
                 }
@@ -47,8 +49,10 @@
                     auth.userData.id = response.id;
                     auth.userData.name = response.name;
                     auth.getUserPicture(auth.userData.id);
+                    console.log('auth.getUserData()');
                     console.log(response);
                 } else {
+                    console.log('auth.getUserData()');
                     console.log(response);
                 }
             });
@@ -59,21 +63,23 @@
                 function(response) {
                     if (response && !response.error) {
                         auth.userData.profile_pic = response.data.url;
-                        console.log(response);
                         auth.buildUserProfile(auth.userData);
+                        console.log('auth.getUserPicture()');
+                        console.log(response);
                     } else {
+                        console.log('auth.getUserPicture()');
                         console.log(response);
                     }
                 }
             );
         },
         buildUserProfile: function(userObj) {
-            let html = `
-            <h1>${userObj.name}<h1>
-            <h3>${userObj.id}</h3>
-            <img src="${userObj.profile_pic}">
-          `;
 
+            let html = `
+                <h1>${userObj.name}<h1>
+                <h3>${userObj.id}</h3>
+                <img src="${userObj.profile_pic}">
+              `;
 
             $('#box').html(html);
         },
