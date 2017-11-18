@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>facebookHOF</title>
+    <title>facebookHOF</title>
 </head>
 <body>
 
-<fb:login-button 
-  scope="public_profile,email,user_friends"
-  onlogin="checkLoginState();">
+<fb:login-button
+        scope="public_profile,email,user_friends"
+        onlogin="checkLoginState();">
 </fb:login-button>
 
 
@@ -16,112 +16,107 @@
 <p id="box"></p>
 
 <script
-  src="https://code.jquery.com/jquery-3.2.1.min.js"
-  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-  crossorigin="anonymous"></script>
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
 
 <script>
-let userObject = {};
+    let cachedUserData = {};
 
-window.fbAsyncInit = function() {
+    window.fbAsyncInit = function () {
 
-  FB.init({
-  	appId            : '280458762475425',
-  	autoLogAppEvents : true,
-  	xfbml            : true,
-  	version          : 'v2.11'
-  });
-  
-  FB.AppEvents.logPageView();
+        FB.init({
+            appId: '280458762475425',
+            autoLogAppEvents: true,
+            xfbml: true,
+            version: 'v2.11'
+        });
 
-  checkLoginState();
-  testAPI();
+        FB.AppEvents.logPageView();
 
-};
-
-(function(d, s, id){
-	var js, fjs = d.getElementsByTagName(s)[0];
-	if (d.getElementById(id)) {return;}
-	js = d.createElement(s); js.id = id;
-	js.src = "https://connect.facebook.net/en_US/sdk.js";
-	fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));
-
-function checkLoginState() {
-  FB.getLoginStatus(function(response) {
-    statusChangeCallback(response);
-  });
-}
-
-function statusChangeCallback(response) {
-  if (response.status === 'connected') {
-    // user is logged in
-    userObject.user_id = response.authResponse.userID;
-    userObject.access_token = response.authResponse.accessToken;
-    console.log('Looged in and autheticated.');
-  } else {
-    // user is logged out
-    // location.href = './login';
-    console.log('Not logged in.');
-  }
-}
-
-function logout() {
-  FB.logout(function(response) {
-    setElements(false);
-  });
-}
+        checkLoginState();
 
 
-function testAPI() {
-  FB.api('/me?fields=id,name,friends,friendlists', {  access_token : userObject.access_token }, function(response) {
-    if (response && !response.error) {
-      userObject.id = response.id;
-      userObject.name = response.name;
-      console.log(response);
-      getUserPic(response);
-    } else {
-      console.log(response);
-    }
-  });
-}
+    };
 
-function getUserPic(res) {
-  FB.api(
-      "/" + res.id + "/picture",
-      function (response) {
-        if (response && !response.error) {
-          userObject.profile_pic = response.data.url;
-          console.log(response);
-          buildProfile(userObject);
-        } else {
-          console.log(response);
+    (function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) {
+            return;
         }
-      }
-  );  
-}
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
 
-function buildProfile(userObj) {
+    function checkLoginState() {
+        FB.getLoginStatus(function (response) {
+            if (response.status === 'connected') {
+                // if user is logged in
+                console.log('User logged in. ID: ' + response.authResponse.userID);
+                let auth_user_id = response.authResponse.userID;
+                let auth_access_token = response.authResponse.accessToken;
+                getUserData(auth_access_token);
+            } else {
+                // if user is logged out
+                console.log('No user logged in.');
+                // location.href = './login';
+            }
+        });
+    }
 
-  let html = `
+    function logout() {
+        FB.logout(function (response) {
+
+        });
+    }
+
+
+    function getUserData(accessToken) {
+        FB.api('/me?fields=id,name,friends,friendlists', {access_token: accessToken}, function (response) {
+            if (response && !response.error) {
+                cachedUserData.id = response.id;
+                cachedUserData.name = response.name;
+                getUserPic(auth_user_id);
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+        });
+    }
+
+    function getUserPic(userID) {
+        FB.api(
+            "/" + userID + "/picture",
+            function (response) {
+                if (response && !response.error) {
+                    cachedUserData.profile_pic = response.data.url;
+                    console.log(response);
+                    buildProfile(cachedUserData);
+                } else {
+                    console.log(response);
+                }
+            }
+        );
+    }
+
+    function buildProfile(userObj) {
+
+        let html = `
     <h1>${userObj.name}<h1>
     <h3>${userObj.id}</h3>
     <img src="${userObj.profile_pic}">
-    <h3>${userObj.user_id}</h3>
-    <h3>${userObj.access_token}</h3>
   `;
 
-  console.log(userObj);
 
-  $('#box').html(html);
+        $('#box').html(html);
 
-}
+    }
 
-$('#test_api').on('click', function() {
-  testAPI();
-});
-
-
+    $('#test_api').on('click', function () {
+        getUserData();
+    });
 
 
 </script>
