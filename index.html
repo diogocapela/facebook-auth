@@ -94,9 +94,9 @@ function testAPI() {
   });
 }
 
-function getUserPic(userInfo) {
+function getUserPic(res) {
   FB.api(
-      "/" + userInfo + "/picture",
+      "/" + res.id + "/picture",
       function (response) {
         if (response && !response.error) {
           console.log(response);
@@ -114,6 +114,8 @@ function buildProfile(user, imgUrl) {
     <h1>${user.name}<h1>
     <h3>${user.id}</h3>
   `;
+
+  console.log(imgUrl);
 
   $('#box').html(html);
 
