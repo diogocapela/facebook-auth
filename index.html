@@ -73,17 +73,17 @@
             );
         },
         buildUserProfile: function(userObj) {
-
             let html = `
                 <h1>${userObj.name}<h1>
                 <h3>${userObj.id}</h3>
                 <img src="${userObj.profile_pic}">
               `;
-
             $('#box').html(html);
         },
         logout: function() {
             FB.logout(function(response) {
+                console.log('auth.logout()');
+                console.log(response);
                 //location.href = './login';
             });
         }
