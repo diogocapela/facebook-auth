@@ -55,9 +55,9 @@
             if (response.status === 'connected') {
                 // if user is logged in
                 console.log('User logged in. ID: ' + response.authResponse.userID);
-                let auth_user_id = response.authResponse.userID;
-                let auth_access_token = response.authResponse.accessToken;
-                getUserData(auth_access_token);
+                cachedUserData.auth_user_id = response.authResponse.userID;
+                cachedUserData.auth_access_token = response.authResponse.accessToken;
+                getUserData(cachedUserData.auth_access_token);
             } else {
                 // if user is logged out
                 console.log('No user logged in.');
@@ -78,7 +78,7 @@
             if (response && !response.error) {
                 cachedUserData.id = response.id;
                 cachedUserData.name = response.name;
-                getUserPic(auth_user_id);
+                getUserPic(cachedUserData.id);
                 console.log(response);
             } else {
                 console.log(response);
