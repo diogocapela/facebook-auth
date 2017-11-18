@@ -26,7 +26,7 @@ let userAccessToken;
 window.fbAsyncInit = function() {
 
   FB.init({
-  	appId            : '182117469011248',
+  	appId            : '280458762475425',
   	autoLogAppEvents : true,
   	xfbml            : true,
   	version          : 'v2.11'
@@ -82,13 +82,19 @@ function logout() {
 }
 
 function testAPI() {
-  FB.api('/me?fields=id,name,friends,friendlists', {  access_token : userAccessToken }, function(response) {
+  FB.api('/me?fields=id,name,friends,friendlists,profile_pic', {  access_token : userAccessToken }, function(response) {
     if (response && !response.error) {
       console.log(response);
     } else {
       console.log(response);
     }
   });
+}
+
+function buildHallOfFame(response) {
+  let html = `
+    <h1><h1>
+  `;
 }
 
 $('#test_api').on('click', function() {
