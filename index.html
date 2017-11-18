@@ -17,7 +17,7 @@
   crossorigin="anonymous"></script>
 
 <script>
-$(document).ready(function(){
+
 
   window.fbAsyncInit = function() {
     FB.init({
@@ -40,38 +40,6 @@ $(document).ready(function(){
   }(document, 'script', 'facebook-jssdk'));
 
 
-
-
-  function init() {
-    // The first step when loading your web page is figuring out if a person is already logged into your app with Facebook login
-    checkLoginState();
-
-    // response
-
-    // {
-    //     status: 'connected',
-    //     authResponse: {
-    //         accessToken: '...',
-    //         expiresIn:'...',
-    //         signedRequest:'...',
-    //         userID:'...'
-    //     }
-    // }
-
-    FB.api(
-      '/me',
-      'GET',
-      {"fields":"id,name,friends,friendlists"},
-      function(response) {
-          // Insert your code here
-
-         console.log(response);
-      }
-    );
-
-
-  }
-
   function checkLoginState() {
     FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
@@ -89,7 +57,7 @@ $(document).ready(function(){
 
 
 
-});
+
 </script>
 </body>
 </html>
