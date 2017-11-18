@@ -21,22 +21,17 @@
         crossorigin="anonymous"></script>
 
 <script>
-    let cachedUserData = {};
 
-    window.fbAsyncInit = function () {
 
+    window.fbAsyncInit = function() {
         FB.init({
             appId: '280458762475425',
             autoLogAppEvents: true,
             xfbml: true,
             version: 'v2.11'
         });
-
         FB.AppEvents.logPageView();
-
-        checkLoginState();
-
-
+        auth.checkLoginState();
     };
 
     (function (d, s, id) {
@@ -50,72 +45,74 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-    function checkLoginState() {
-        FB.getLoginStatus(function (response) {
-            if (response.status === 'connected') {
-                // if user is logged in
-                console.log('User logged in. ID: ' + response.authResponse.userID);
-                cachedUserData.auth_user_id = response.authResponse.userID;
-                cachedUserData.auth_access_token = response.authResponse.accessToken;
-                getUserData(cachedUserData.auth_access_token);
-            } else {
-                // if user is logged out
-                console.log('No user logged in.');
-                // location.href = './login';
-            }
-        });
-    }
-
-    function logout() {
-        FB.logout(function (response) {
-
-        });
-    }
-
-
-    function getUserData(accessToken) {
-        FB.api('/me?fields=id,name,friends,friendlists', {access_token: accessToken}, function (response) {
-            if (response && !response.error) {
-                cachedUserData.id = response.id;
-                cachedUserData.name = response.name;
-                getUserPic(cachedUserData.id);
-                console.log(response);
-            } else {
-                console.log(response);
-            }
-        });
-    }
-
-    function getUserPic(userID) {
-        FB.api(
-            "/" + userID + "/picture",
-            function (response) {
+    let auth = {
+        userData: {
+            id,
+            access_token,
+            name,
+            profile_pic
+        },
+        checkLoginState: function() {
+            FB.getLoginStatus(function(response) {
+                if (response.status === 'connected') {
+                    // if user is logged in
+                    console.log('User logged in. ID: ' + response.authResponse.userID);
+                    auth.userData.id = response.authResponse.userID;
+                    auth.userData.access_token = response.authResponse.accessToken;
+                    auth.getUserData(auth.userData.access_token);
+                } else {
+                    // if user is logged out
+                    console.log('No user logged in.');
+                    //location.href = './login';
+                }
+            });
+        },
+        getUserData: function(accessToken) {
+            FB.api('/me?fields=id,name,friends,friendlists', {access_token: accessToken}, function(response) {
                 if (response && !response.error) {
-                    cachedUserData.profile_pic = response.data.url;
+                    auth.userData.id = response.id;
+                    auth.userData.name = response.name;
+                    auth.getUserPicture(auth.userData.id);
                     console.log(response);
-                    buildProfile(cachedUserData);
                 } else {
                     console.log(response);
                 }
-            }
-        );
-    }
+            });
+        },
+        getUserPicture: function(userID) {
+            FB.api(
+                "/" + userID + "/picture",
+                function(response) {
+                    if (response && !response.error) {
+                        auth.userData.profile_pic = response.data.url;
+                        console.log(response);
+                        auth.buildUserProfile(auth.userData);
+                    } else {
+                        console.log(response);
+                    }
+                }
+            );
+        },
+        buildUserProfile: function(userObj) {
+            let html = `
+            <h1>${userObj.name}<h1>
+            <h3>${userObj.id}</h3>
+            <img src="${userObj.profile_pic}">
+          `;
 
-    function buildProfile(userObj) {
 
-        let html = `
-    <h1>${userObj.name}<h1>
-    <h3>${userObj.id}</h3>
-    <img src="${userObj.profile_pic}">
-  `;
+            $('#box').html(html);
+        },
+        logout: function() {
+            FB.logout(function(response) {
+                //location.href = './login';
+            });
+        }
+    };
 
-
-        $('#box').html(html);
-
-    }
 
     $('#test_api').on('click', function () {
-        getUserData();
+        auth.getUserData();
     });
 
 
