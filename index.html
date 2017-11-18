@@ -10,8 +10,7 @@
         onlogin="auth.checkLoginState();">
 </fb:login-button>
 
-
-<button id="test_api">TEST API</button>
+<button class="auth-logout-button">LOGOUT</button>
 
 <p id="box"></p>
 
@@ -116,8 +115,8 @@
 
     // auth dom manipulation
 
-    $('#test_api').on('click', function () {
-        auth.getUserData();
+    $('.auth-logout-button').on('click', function() {
+        auth.logout();
     });
 
 
