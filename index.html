@@ -1,32 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>facebookHOF</title>
 </head>
 <body>
 
-<fb:login-button
-        scope="public_profile,email,user_friends"
-        onlogin="auth.checkLoginState();">
-</fb:login-button>
+<!-- Facebook Login Button -->
+<div class="logged-out">
+    <fb:login-button
+            scope="public_profile,email,user_friends"
+            onlogin="auth.checkLoginState();">
+    </fb:login-button>
+</div>
 
-<button class="auth-logout-button">LOGOUT</button>
+<!-- Facebook Logout Button -->
+<div class="logged-in">
+    <button id="auth_logout_button">Logout</button>
+</div>
 
-<p id="box"></p>
+<div id="box"></div>
 
-<script
-        src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 <script>
 
-    // auth class
-
     let auth = {
         userData: {},
-        checkLoginState: function() {
-            FB.getLoginStatus(function(response) {
+        checkLoginState: function () {
+            FB.getLoginStatus(function (response) {
                 if (response.status === 'connected') {
                     // if user is logged in
                     console.log('auth.checkLoginState()');
@@ -34,6 +36,7 @@
                     auth.userData.id = response.authResponse.userID;
                     auth.userData.access_token = response.authResponse.accessToken;
                     auth.getUserData(auth.userData.access_token);
+                    auth.setTemplate(true);
                 } else {
                     // if user is logged out
                     console.log('auth.checkLoginState()');
@@ -42,8 +45,8 @@
                 }
             });
         },
-        getUserData: function(accessToken) {
-            FB.api('/me?fields=id,name,friends,friendlists', {access_token: accessToken}, function(response) {
+        getUserData: function (accessToken) {
+            FB.api('/me?fields=id,name,friends,friendlists', {access_token: accessToken}, function (response) {
                 if (response && !response.error) {
                     auth.userData.id = response.id;
                     auth.userData.name = response.name;
@@ -56,10 +59,10 @@
                 }
             });
         },
-        getUserPicture: function(userID) {
+        getUserPicture: function (userID) {
             FB.api(
                 "/" + userID + "/picture",
-                function(response) {
+                function (response) {
                     if (response && !response.error) {
                         auth.userData.profile_pic = response.data.url;
                         auth.buildUserProfile(auth.userData);
@@ -72,7 +75,7 @@
                 }
             );
         },
-        buildUserProfile: function(userObj) {
+        buildUserProfile: function (userObj) {
             let html = `
                 <h1>${userObj.name}<h1>
                 <h3>${userObj.id}</h3>
@@ -80,8 +83,17 @@
               `;
             $('#box').html(html);
         },
-        logout: function() {
-            FB.logout(function(response) {
+        setTemplate: function (isLoggedIn) {
+            if(isLoggedIn) {
+                $('.logged-in').show();
+                $('.logged-out').hide();
+            } else {
+                $('.logged-in').hide();
+                $('.logged-out').show();
+            }
+        },
+        logout: function () {
+            FB.logout(function (response) {
                 console.log('auth.logout()');
                 console.log(response);
                 //location.href = './login';
@@ -89,9 +101,7 @@
         }
     };
 
-    // auth init
-
-    window.fbAsyncInit = function() {
+    window.fbAsyncInit = function () {
         FB.init({
             appId: '280458762475425',
             autoLogAppEvents: true,
@@ -113,12 +123,9 @@
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
 
-    // auth dom manipulation
-
-    $('.auth-logout-button').on('click', function() {
+    $('#auth_logout_button').on('click', function () {
         auth.logout();
     });
-
 
 </script>
 </body>
